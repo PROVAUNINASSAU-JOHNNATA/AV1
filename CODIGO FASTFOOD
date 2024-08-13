@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio Digital - Fast Food</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #E63946;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #E63946;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        .category {
+            margin-bottom: 30px;
+        }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .item input[type="checkbox"] {
+            margin-right: 15px;
+            transform: scale(1.5);
+            cursor: pointer;
+        }
+        .item input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            font-size: 1em;
+            margin-left: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .name {
+            flex-grow: 1;
+            font-size: 1.2em;
+        }
+        .price {
+            color: #E63946;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        #cart {
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        #total {
+            font-weight: bold;
+            font-size: 1.3em;
+            text-align: right;
+            margin-top: 15px;
+            color: #E63946;
+        }
+        button {
+            background-color: #E63946;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #d62828;
+        }
+        #checkout {
+            margin-top: 30px;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+        label {
+            font-size: 1.1em;
+            color: #333;
+            margin-right: 20px;
+        }
+        @media (max-width: 768px) {
+            .item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .item input[type="number"] {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            #total {
+                text-align: left;
+            }
+        }
+    </style>
+    <script>
+        function updateCart() {
+            const cart = document.getElementById('cart-items');
+            const total = document.getElementById('total');
+            cart.innerHTML = '';
+            let totalPrice = 0;
+
+            const items = document.querySelectorAll('.item');
+            items.forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                const quantity = item.querySelector('input[type="number"]').value;
+                const price = parseFloat(item.querySelector('.price').textContent.replace('R$', ''));
+                
+                if (checkbox.checked && quantity > 0) {
+                    const itemName = item.querySelector('.name').textContent;
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item';
+                    cartItem.textContent = ${itemName} x ${quantity} - R$ ${(price * quantity).toFixed(2)};
+                    cart.appendChild(cartItem);
+                    totalPrice += price * quantity;
+                }
+            });
+
+            total.textContent = Total: R$ ${totalPrice.toFixed(2)};
+        }
+
+        function finalizeOrder() {
+            const name = document.getElementById('name').value;
+            const address = document.getElementById('address').value;
+            const payment = document.querySelector('input[name="payment"]:checked').value;
+
+            if (name === '' || address === '') {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            const orderSummary = document.getElementById('cart-items').innerHTML;
+            if (orderSummary === '') {
+                alert('Seu carrinho está vazio.');
+                return;
+            }
+
+            alert(Pedido confirmado! Nome: ${name}, Endereço: ${address}, Pagamento: ${payment});
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Cardápio Digital - Fast Food</h1>
+        
+        <!-- Apresentação do Cardápio -->
+        <div class="category">
+            <h2>Hambúrgueres</h2>
+            <div class="item">
+                <input type="checkbox" onchange="updateCart()">
+                <span class="name">Cheeseburger</span>
+                <span class="price">R$ 15.00</span>
+                <input type="number" value="1" min="1" onchange="updateCart()">
+            </div>
+            <div class="item">
+                <input type="checkbox" onchange="updateCart()">
+                <span class="name">Hamburger</span>
+                <span class="price">R$ 12.00</span>
+                <input type="number" value="1" min="1" onchange="updateCart()">
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Salgados</h2>
+            <div class="item">
+                <input type="checkbox" onchange="updateCart()">
+                <span class="name">Coxinha</span>
+                <span class="price">R$ 5.00</span>
+                <input type="number" value="1" min="1" onchange="updateCart()">
+            </div>
+            <div class="item">
+                <input type="checkbox" onchange="updateCart()">
+                <span class="name">Kibe</span>
+                <span class="price">R$ 4.50</span>
+                <input type="number" value="1" min="1" onchange="updateCart()">
+            </div>
+        </div>
+
+      <!-- Carrinho de Compras -->
+        <div id="cart">
+            <h2>Carrinho de Compras</h2>
+            <div id="cart-items"></div>
+            <div id="total">Total: R$ 0.00</div>
+            <button onclick="updateCart()">Adicionar mais itens</button>
+        </div>
+
+        <!-- Finalização do Pedido -->
+        <div id="checkout">
+            <h2>Finalizar Pedido</h2>
+            <label for="name">Nome Completo:</label><br>
+            <input type="text" id="name" name="name"><br><br>
+
+            <label for="address">Endereço:</label><br>
+            <input type="text" id="address" name="address"><br><br>
+
+            <h3>Forma de Pagamento</h3>
+            <input type="radio" id="debit" name="payment" value="Cartão de Débito">
+            <label for="debit">Cartão de Débito</label><br>
+            <input type="radio" id="credit" name="payment" value="Cartão de Crédito">
+            <label for="credit">Cartão de Crédito</label><br>
+            <input type="radio" id="pix" name="payment" value="Pix">
+            <label for="pix">Pix</label><br><br>
+
+            <button onclick="finalizeOrder()">Confirmar Pedido</button>
+            <button onclick="location.reload()">Cancelar Pedido</button>
+        </div>
+    </div>
+</body>
+</html>
